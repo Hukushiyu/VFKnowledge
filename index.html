@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>TBL_Knowledge_Article_Extraction_Template.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+/* Custom Textarea Styling */
+textarea.fill-in {
+	width: 100%;
+	min-height: 100px;
+	padding: 12px;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif;
+	font-size: 14px;
+	line-height: 1.6;
+	border: 2px solid #cccccc;
+	border-radius: 4px;
+	background-color: #f8f8f8;
+	resize: vertical;
+	box-sizing: border-box;
+	margin: 8px 0;
+	transition: border-color 0.3s, background-color 0.3s;
+}
+
+textarea.fill-in:focus {
+	outline: none;
+	border-color: #007acc;
+	background-color: #ffffff;
+	box-shadow: 0 0 5px rgba(0, 122, 204, 0.3);
+}
+
+textarea.fill-in:hover {
+	border-color: #999999;
+}
+
+textarea.fill-in::placeholder {
+	color: #999999;
+	font-style: italic;
+}
+
+/* Large textarea for notes section */
+textarea.fill-in-large {
+	min-height: 200px;
+}
+
+/* Question textarea styling */
+textarea.fill-in-question {
+	width: calc(100% - 40px);
+	min-height: 50px;
+	padding: 10px;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.4;
+	border: 2px solid #007acc;
+	border-radius: 4px;
+	background-color: #e8f4ff;
+	resize: vertical;
+	box-sizing: border-box;
+	margin: 12px 0 6px 0;
+	transition: border-color 0.3s, background-color 0.3s;
+	color: #333;
+	display: inline-block;
+	vertical-align: top;
+}
+
+textarea.fill-in-question:focus {
+	outline: none;
+	border-color: #005a9c;
+	background-color: #ffffff;
+	box-shadow: 0 0 5px rgba(0, 122, 204, 0.4);
+}
+
+textarea.fill-in-question:hover {
+	border-color: #005a9c;
+}
+
+textarea.fill-in-question::placeholder {
+	color: #666;
+	font-style: italic;
+	font-weight: normal;
+}
+
+/* Answer textarea with delete button */
+textarea.fill-in {
+	width: calc(100% - 40px);
+	display: inline-block;
+	vertical-align: top;
+}
+
+/* Q&A Pair Container */
+.qa-pair {
+	margin-bottom: 15px;
+	position: relative;
+}
+
+/* Delete button styling */
+.btn-delete {
+	width: 32px;
+	height: 32px;
+	background: #dc3545;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 18px;
+	font-weight: bold;
+	margin-left: 5px;
+	transition: all 0.3s;
+	vertical-align: top;
+	margin-top: 12px;
+	display: inline-block;
+}
+
+.btn-delete:hover {
+	background: #c82333;
+	transform: scale(1.1);
+}
+
+.btn-delete:active {
+	transform: scale(0.95);
+}
+
+/* Add Q&A button */
+.btn-add-qa {
+	padding: 10px 20px;
+	background: #28a745;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 600;
+	margin: 15px 0;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	transition: all 0.3s;
+}
+
+.btn-add-qa:hover {
+	background: #218838;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-add-qa:active {
+	transform: translateY(0);
+}
+
+/* URL link styling */
+label a {
+	color: #007acc;
+	text-decoration: none;
+	word-break: break-all;
+}
+
+label a:hover {
+	text-decoration: underline;
+	color: #005a9c;
+}
+
+label a:visited {
+	color: #6b4c9a;
+}
+
+/* Control bar styling */
+.control-bar {
+	position: sticky;
+	top: 0;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	padding: 15px 20px;
+	box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+	z-index: 1000;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.control-bar h2 {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 600;
+	border: none;
+	padding: 0;
+}
+
+.control-buttons {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.btn {
+	padding: 8px 16px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 500;
+	transition: all 0.3s;
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.btn-export {
+	background: #28a745;
+	color: white;
+}
+
+.btn-export:hover {
+	background: #218838;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-clear {
+	background: #dc3545;
+	color: white;
+}
+
+.btn-clear:hover {
+	background: #c82333;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-print {
+	background: #17a2b8;
+	color: white;
+}
+
+.btn-print:hover {
+	background: #138496;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.save-status {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+	padding: 5px 12px;
+	background: rgba(255,255,255,0.2);
+	border-radius: 20px;
+}
+
+.save-indicator {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #28a745;
+	animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0.5; }
+}
+
+.progress-stats {
+	font-size: 13px;
+	padding: 5px 12px;
+	background: rgba(255,255,255,0.2);
+	border-radius: 20px;
+}
+
+@media print {
+	.control-bar {
+		display: none;
+	}
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+
+<!-- Control Bar -->
+<div class="control-bar">
+	<div>
+		<h2>📋 Timberland Knowledge Extraction</h2>
+		<div class="save-status">
+			<span class="save-indicator"></span>
+			<span id="saveStatus">Auto-save enabled</span>
+		</div>
+	</div>
+	<div class="control-buttons">
+		<div class="progress-stats" id="progressStats">
+			Progress: 0% complete
+		</div>
+		<button class="btn btn-export" onclick="exportData()">
+			💾 Export Data
+		</button>
+		<button class="btn btn-print" onclick="window.print()">
+			🖨️ Print to PDF
+		</button>
+		<button class="btn btn-clear" onclick="clearAllData()">
+			🗑️ Clear All
+		</button>
+	</div>
+</div>
+
+<script>
+// Auto-save functionality using localStorage
+const STORAGE_KEY = 'timberland_knowledge_extraction';
+
+// Load saved data on page load
+window.addEventListener('DOMContentLoaded', function() {
+	loadSavedData();
+	updateProgress();
+	setupAutoSave();
+	updateSaveTimestamp();
+});
+
+// Load saved data from localStorage
+function loadSavedData() {
+	const savedData = localStorage.getItem(STORAGE_KEY);
+	if (savedData) {
+		try {
+			const data = JSON.parse(savedData);
+			
+			// Check if this is old format data (no questions array or questions don't start with "Question:")
+			const isOldFormat = !data.questions || (data.questions && data.questions.length > 0 && !data.questions[0].startsWith('Question:'));
+			
+			if (isOldFormat) {
+				console.log('⚠️ Old format detected. Please review your questions and update them to the new format.');
+				showSaveStatus('Old data format detected - please review', 'success');
+				// Don't load old question format, only load answers and checkboxes
+			} else {
+				// Restore question textareas
+				document.querySelectorAll('textarea.fill-in-question').forEach((textarea, index) => {
+					if (data.questions && data.questions[index]) {
+						textarea.value = data.questions[index];
+					}
+				});
+			}
+			
+			// Always restore answer textareas
+			document.querySelectorAll('textarea.fill-in').forEach((textarea, index) => {
+				if (data.textareas && data.textareas[index]) {
+					textarea.value = data.textareas[index];
+				}
+			});
+			
+			// Restore checkboxes
+			document.querySelectorAll('input[type="checkbox"]').forEach((checkbox, index) => {
+				if (data.checkboxes && data.checkboxes[index] !== undefined) {
+					checkbox.checked = data.checkboxes[index];
+				}
+			});
+			
+			console.log('✅ Data loaded successfully');
+		} catch (e) {
+			console.error('Error loading saved data:', e);
+		}
+	}
+}
+
+// Save data to localStorage
+function saveData() {
+	const data = {
+		questions: [],
+		textareas: [],
+		checkboxes: [],
+		timestamp: new Date().toISOString()
+	};
+	
+	// Save question textareas
+	document.querySelectorAll('textarea.fill-in-question').forEach(textarea => {
+		data.questions.push(textarea.value);
+	});
+	
+	// Save answer textareas
+	document.querySelectorAll('textarea.fill-in').forEach(textarea => {
+		data.textareas.push(textarea.value);
+	});
+	
+	// Save checkboxes
+	document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+		data.checkboxes.push(checkbox.checked);
+	});
+	
+	localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+	updateSaveTimestamp();
+	updateProgress();
+	showSaveStatus('Saved', 'success');
+}
+
+// Setup auto-save listeners
+function setupAutoSave() {
+	// Auto-save on question textarea change
+	document.querySelectorAll('textarea.fill-in-question').forEach(textarea => {
+		textarea.addEventListener('input', debounce(saveData, 1000));
+		textarea.addEventListener('blur', saveData);
+	});
+	
+	// Auto-save on answer textarea change
+	document.querySelectorAll('textarea.fill-in').forEach(textarea => {
+		textarea.addEventListener('input', debounce(saveData, 1000));
+		textarea.addEventListener('blur', saveData);
+	});
+	
+	// Auto-save on checkbox change
+	document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+		checkbox.addEventListener('change', saveData);
+	});
+}
+
+// Debounce function to limit save frequency
+function debounce(func, wait) {
+	let timeout;
+	return function executedFunction(...args) {
+		const later = () => {
+			clearTimeout(timeout);
+			func(...args);
+		};
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+	};
+}
+
+// Update save timestamp
+function updateSaveTimestamp() {
+	const savedData = localStorage.getItem(STORAGE_KEY);
+	if (savedData) {
+		try {
+			const data = JSON.parse(savedData);
+			if (data.timestamp) {
+				const date = new Date(data.timestamp);
+				const timeString = date.toLocaleTimeString();
+				document.getElementById('saveStatus').textContent = `Last saved: ${timeString}`;
+			}
+		} catch (e) {
+			console.error('Error reading timestamp:', e);
+		}
+	}
+}
+
+// Update progress statistics
+function updateProgress() {
+	const textareas = document.querySelectorAll('textarea.fill-in');
+	const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+	
+	let filledTextareas = 0;
+	textareas.forEach(textarea => {
+		if (textarea.value.trim().length > 0) {
+			filledTextareas++;
+		}
+	});
+	
+	let checkedBoxes = 0;
+	checkboxes.forEach(checkbox => {
+		if (checkbox.checked) {
+			checkedBoxes++;
+		}
+	});
+	
+	const totalItems = textareas.length;
+	const percentage = totalItems > 0 ? Math.round((filledTextareas / totalItems) * 100) : 0;
+	
+	document.getElementById('progressStats').innerHTML = `
+		Progress: ${percentage}% • ${filledTextareas}/${totalItems} fields • ${checkedBoxes}/${checkboxes.length} URLs
+	`;
+}
+
+// Show save status message
+function showSaveStatus(message, type) {
+	const statusEl = document.getElementById('saveStatus');
+	statusEl.textContent = message;
+	
+	// Brief highlight effect
+	statusEl.style.transition = 'all 0.3s';
+	statusEl.style.transform = 'scale(1.05)';
+	setTimeout(() => {
+		statusEl.style.transform = 'scale(1)';
+	}, 300);
+}
+
+// Export data as JSON
+function exportData() {
+	const savedData = localStorage.getItem(STORAGE_KEY);
+	if (!savedData) {
+		alert('No data to export. Please fill out the form first.');
+		return;
+	}
+	
+	const data = JSON.parse(savedData);
+	
+	// Create a more readable export format
+	const exportData = {
+		exportDate: new Date().toISOString(),
+		lastSaved: data.timestamp,
+		topics: []
+	};
+	
+	// Get all topics
+	const topics = document.querySelectorAll('h2');
+	let textareaIndex = 0;
+	
+	topics.forEach(topic => {
+		if (topic.id !== 'timberland-knowledge-article-extraction') {
+			const topicData = {
+				title: topic.textContent,
+				fields: []
+			};
+			
+			// Get all questions in this topic
+			let currentElement = topic.nextElementSibling;
+			while (currentElement && currentElement.tagName !== 'H2' && currentElement.tagName !== 'HR') {
+				if (currentElement.tagName === 'P' && currentElement.querySelector('strong')) {
+					const question = currentElement.querySelector('strong').textContent;
+					const textarea = currentElement.nextElementSibling;
+					if (textarea && textarea.tagName === 'TEXTAREA') {
+						topicData.fields.push({
+							question: question,
+							answer: data.textareas[textareaIndex] || ''
+						});
+						textareaIndex++;
+					}
+				}
+				currentElement = currentElement.nextElementSibling;
+			}
+			
+			if (topicData.fields.length > 0) {
+				exportData.topics.push(topicData);
+			}
+		}
+	});
+	
+	// Download as JSON file
+	const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = `timberland_knowledge_extraction_${new Date().toISOString().split('T')[0]}.json`;
+	document.body.appendChild(a);
+	a.click();
+	document.body.removeChild(a);
+	URL.revokeObjectURL(url);
+	
+	showSaveStatus('Exported successfully!', 'success');
+}
+
+// Clear all data
+function clearAllData() {
+	if (confirm('⚠️ Are you sure you want to clear ALL data? This cannot be undone!')) {
+		if (confirm('Really sure? This will delete all your progress.')) {
+			localStorage.removeItem(STORAGE_KEY);
+			
+			// Clear question textareas
+			document.querySelectorAll('textarea.fill-in-question').forEach(textarea => {
+				textarea.value = textarea.getAttribute('placeholder') || '';
+			});
+			
+			// Clear answer textareas
+			document.querySelectorAll('textarea.fill-in').forEach(textarea => {
+				textarea.value = '';
+			});
+			
+			// Clear checkboxes
+			document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+				checkbox.checked = false;
+			});
+			
+			updateProgress();
+			showSaveStatus('All data cleared', 'success');
+		}
+	}
+}
+
+// Add new Q&A pair
+function addQAPair(button) {
+	const questionsContainer = button.previousElementSibling;
+	
+	const qaPair = document.createElement('div');
+	qaPair.className = 'qa-pair';
+	
+	const questionTextarea = document.createElement('textarea');
+	questionTextarea.className = 'fill-in-question';
+	questionTextarea.placeholder = 'Enter your question here...';
+	questionTextarea.value = 'Question: for example, "Your question here"';
+	
+	const deleteBtn = document.createElement('button');
+	deleteBtn.className = 'btn-delete';
+	deleteBtn.onclick = function() { deleteQAPair(this); };
+	deleteBtn.title = 'Delete this Q&A pair';
+	deleteBtn.textContent = '×';
+	
+	const br = document.createElement('br');
+	
+	const answerTextarea = document.createElement('textarea');
+	answerTextarea.className = 'fill-in';
+	answerTextarea.placeholder = 'Fill in your answer here...';
+	
+	qaPair.appendChild(questionTextarea);
+	qaPair.appendChild(deleteBtn);
+	qaPair.appendChild(br);
+	qaPair.appendChild(answerTextarea);
+	
+	questionsContainer.appendChild(qaPair);
+	
+	// Setup auto-save for new elements
+	questionTextarea.addEventListener('input', debounce(saveData, 1000));
+	questionTextarea.addEventListener('blur', saveData);
+	answerTextarea.addEventListener('input', debounce(saveData, 1000));
+	answerTextarea.addEventListener('blur', saveData);
+	
+	saveData();
+	showSaveStatus('Q&A pair added', 'success');
+}
+
+// Delete Q&A pair
+function deleteQAPair(button) {
+	if (confirm('Are you sure you want to delete this Q&A pair?')) {
+		const qaPair = button.closest('.qa-pair');
+		qaPair.remove();
+		saveData();
+		showSaveStatus('Q&A pair deleted', 'success');
+		updateProgress();
+	}
+}
+</script>
+<h1 id="timberland-knowledge-article-extraction">Timberland Knowledge Article Extraction</h1>
+<hr>
+<h2 id="topic-1-warranty">TOPIC 1: WARRANTY</h2>
+<h3 id="urls">URLs:</h3>
+<ul>
+<li><input type="checkbox" id="checkbox0"><label for="checkbox0"><a href="https://www.timberland.com/en-us/customer-care/warranties/is-my-item-under-warranty" target="_blank">https://www.timberland.com/en-us/customer-care/warranties/is-my-item-under-warranty</a></label></li>
+<li><input type="checkbox" id="checkbox1"><label for="checkbox1"><a href="https://www.timberland.com/en-us/customer-care/warranties/what-does-your-watch-warranty-cover" target="_blank">https://www.timberland.com/en-us/customer-care/warranties/what-does-your-watch-warranty-cover</a></label></li>
+</ul>
+<h3 id="questions">Questions:</h3>
+<div class="questions-container">
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What items are covered under warranty?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "How long is the warranty period?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What does the warranty cover?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What is NOT covered by warranty?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What do customers need to submit a warranty claim?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "How do customers submit a warranty claim?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What happens after submitting a claim?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What does the watch warranty cover?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "How long is the watch warranty?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What's NOT covered for watches?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "When to escalate warranty claims"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+</div>
+<button class="btn-add-qa" onclick="addQAPair(this)">➕ Add Question & Answer</button>
+<hr>
+<div style="page-break-before: always;"></div>
+<h2 id="topic-2-account-management">TOPIC 2: ACCOUNT MANAGEMENT</h2>
+<h3 id="urls">URLs:</h3>
+<ul>
+<li><input type="checkbox" id="checkbox2"><label for="checkbox2"><a href="https://www.timberland.com/en-us/customer-care/manage-account/how-do-i-manage-my-account" target="_blank">https://www.timberland.com/en-us/customer-care/manage-account/how-do-i-manage-my-account</a></label></li>
+<li><input type="checkbox" id="checkbox3"><label for="checkbox3"><a href="https://www.timberland.com/en-us/customer-care/manage-account/how-do-i-use-favorites" target="_blank">https://www.timberland.com/en-us/customer-care/manage-account/how-do-i-use-favorites</a></label></li>
+</ul>
+<h3 id="questions">Questions:</h3>
+<div class="questions-container">
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "How do customers access their account?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What can customers do in their account?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "How do customers update account information?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "How do customers reset their password?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What is the Favorites feature?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "How do customers add items to Favorites?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "How do customers view/manage their Favorites?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+</div>
+<button class="btn-add-qa" onclick="addQAPair(this)">➕ Add Question & Answer</button>
+<hr>
+<div style="page-break-before: always;"></div>
+<h2 id="topic-3-returns">TOPIC 3: RETURNS</h2>
+<h3 id="urls">URLs:</h3>
+<ul>
+<li><input type="checkbox" id="checkbox4"><label for="checkbox4"><a href="https://www.timberland.com/en-us/customer-care/returns/free-return-policy" target="_blank">https://www.timberland.com/en-us/customer-care/returns/free-return-policy</a></label></li>
+<li><input type="checkbox" id="checkbox5"><label for="checkbox5"><a href="https://www.timberland.com/en-us/customer-care/returns/how-do-i-return-items" target="_blank">https://www.timberland.com/en-us/customer-care/returns/how-do-i-return-items</a></label></li>
+<li><input type="checkbox" id="checkbox6"><label for="checkbox6"><a href="https://www.timberland.com/en-us/customer-care/returns/start-a-return" target="_blank">https://www.timberland.com/en-us/customer-care/returns/start-a-return</a></label></li>
+</ul>
+<h3 id="questions">Questions:</h3>
+<div class="questions-container">
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What is the return window?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "Are returns free?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What items can be returned?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What items CANNOT be returned?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What condition must items be in?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What does the customer need to provide?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "Step-by-step return process"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "Where do customers start a return?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "How are refunds processed?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+</div>
+<button class="btn-add-qa" onclick="addQAPair(this)">➕ Add Question & Answer</button>
+<hr>
+<div style="page-break-before: always;"></div>
+<h2 id="topic-4-exchanges">TOPIC 4: EXCHANGES</h2>
+<h3 id="urls">URLs:</h3>
+<ul>
+<li><input type="checkbox" id="checkbox7"><label for="checkbox7"><a href="https://www.timberland.com/en-us/customer-care/returns/do-you-accept-exchanges" target="_blank">https://www.timberland.com/en-us/customer-care/returns/do-you-accept-exchanges</a></label></li>
+<li><input type="checkbox" id="checkbox8"><label for="checkbox8"><a href="https://www.timberland.com/en-us/customer-care/returns/exchanges" target="_blank">https://www.timberland.com/en-us/customer-care/returns/exchanges</a></label></li>
+</ul>
+<h3 id="questions">Questions:</h3>
+<div class="questions-container">
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "Does Timberland accept exchanges?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What can be exchanged?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What is the exchange timeframe?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "How do customers exchange an item?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "Can customers exchange for a different item?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What are the exchange shipping costs?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+</div>
+<button class="btn-add-qa" onclick="addQAPair(this)">➕ Add Question & Answer</button>
+<hr>
+<div style="page-break-before: always;"></div>
+<h2 id="topic-5-promo-codes--discounts">TOPIC 5: PROMO CODES &amp; DISCOUNTS</h2>
+<h3 id="urls">URLs:</h3>
+<ul>
+<li><input type="checkbox" id="checkbox9"><label for="checkbox9"><a href="https://www.timberland.com/en-us/customer-care/promotions-and-discounts/how-do-i-redeem-promo-discount-codes" target="_blank">https://www.timberland.com/en-us/customer-care/promotions-and-discounts/how-do-i-redeem-promo-discount-codes</a></label></li>
+<li><input type="checkbox" id="checkbox10"><label for="checkbox10"><a href="https://www.timberland.com/en-us/customer-care/promotions-and-discounts/military-discount-program" target="_blank">https://www.timberland.com/en-us/customer-care/promotions-and-discounts/military-discount-program</a></label></li>
+<li><input type="checkbox" id="checkbox11"><label for="checkbox11"><a href="https://www.timberland.com/en-us/customer-care/promotions-and-discounts/teacher-and-students-discount-program" target="_blank">https://www.timberland.com/en-us/customer-care/promotions-and-discounts/teacher-and-students-discount-program</a></label></li>
+<li><input type="checkbox" id="checkbox12"><label for="checkbox12"><a href="https://www.timberland.com/en-us/customer-care/promotions-and-discounts/healthcare-discount-program" target="_blank">https://www.timberland.com/en-us/customer-care/promotions-and-discounts/healthcare-discount-program</a></label></li>
+<li><input type="checkbox" id="checkbox13"><label for="checkbox13"><a href="https://www.timberland.com/en-us/customer-care/promotions-and-discounts/first-responder-discount-program" target="_blank">https://www.timberland.com/en-us/customer-care/promotions-and-discounts/first-responder-discount-program</a></label></li>
+</ul>
+<h3 id="questions">Questions:</h3>
+<div class="questions-container">
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "Where do customers enter promo codes?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "Can multiple promo codes be used?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What if a promo code doesn't work?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "Where can customers find current promo codes?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+</div>
+<button class="btn-add-qa" onclick="addQAPair(this)">➕ Add Question & Answer</button>
+<hr>
+<div style="page-break-before: always;"></div>
+<h2 id="topic-6-timberland-community">TOPIC 6: TIMBERLAND COMMUNITY</h2>
+<h3 id="urls">URLs:</h3>
+<ul>
+<li><input type="checkbox" id="checkbox14"><label for="checkbox14"><a href="https://www.timberland.com/en-us/timberland-community" target="_blank">https://www.timberland.com/en-us/timberland-community</a></label></li>
+</ul>
+<h3 id="questions">Questions:</h3>
+<div class="questions-container">
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What is Timberland Community?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What are the benefits?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "How do customers sign up?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "How do customers earn and redeem rewards?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+</div>
+<button class="btn-add-qa" onclick="addQAPair(this)">➕ Add Question & Answer</button>
+<hr>
+<div style="page-break-before: always;"></div>
+<h2 id="topic-7-out-of-stock-items">TOPIC 7: OUT OF STOCK ITEMS</h2>
+<h3 id="urls">URLs:</h3>
+<ul>
+<li><input type="checkbox" id="checkbox15"><label for="checkbox15"><a href="https://www.timberland.com/en-us/customer-care/product-faqs/will-out-of-stock-items-come-back" target="_blank">https://www.timberland.com/en-us/customer-care/product-faqs/will-out-of-stock-items-come-back</a></label></li>
+</ul>
+<h3 id="questions">Questions:</h3>
+<div class="questions-container">
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "Will out-of-stock items come back?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "How can customers find out when items restock?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What can customers do if item is out of stock?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+</div>
+<button class="btn-add-qa" onclick="addQAPair(this)">➕ Add Question & Answer</button>
+<hr>
+<div style="page-break-before: always;"></div>
+<h2 id="topic-8-shipping-options">TOPIC 8: SHIPPING OPTIONS</h2>
+<h3 id="urls">URLs:</h3>
+<ul>
+<li><input type="checkbox" id="checkbox16"><label for="checkbox16"><a href="https://www.timberland.com/en-us/customer-care/delivery/buy-online-pickup-in-store-and-curbside-delivery" target="_blank">https://www.timberland.com/en-us/customer-care/delivery/buy-online-pickup-in-store-and-curbside-delivery</a></label></li>
+<li><input type="checkbox" id="checkbox17"><label for="checkbox17"><a href="https://www.timberland.com/en-us/customer-care/delivery/do-you-ship-internationally" target="_blank">https://www.timberland.com/en-us/customer-care/delivery/do-you-ship-internationally</a></label></li>
+<li><input type="checkbox" id="checkbox18"><label for="checkbox18"><a href="https://www.timberland.com/en-us/customer-care/delivery/do-you-ship-to-canada" target="_blank">https://www.timberland.com/en-us/customer-care/delivery/do-you-ship-to-canada</a></label></li>
+<li><input type="checkbox" id="checkbox19"><label for="checkbox19"><a href="https://www.timberland.com/en-us/customer-care/delivery/how-do-i-ship-my-order-to-a-store" target="_blank">https://www.timberland.com/en-us/customer-care/delivery/how-do-i-ship-my-order-to-a-store</a></label></li>
+<li><input type="checkbox" id="checkbox20"><label for="checkbox20"><a href="https://www.timberland.com/en-us/customer-care/delivery/how-do-you-ship-how-much-does-it-cost" target="_blank">https://www.timberland.com/en-us/customer-care/delivery/how-do-you-ship-how-much-does-it-cost</a></label></li>
+<li><input type="checkbox" id="checkbox21"><label for="checkbox21"><a href="https://www.timberland.com/en-us/customer-care/delivery/what-is-your-shipping-policy" target="_blank">https://www.timberland.com/en-us/customer-care/delivery/what-is-your-shipping-policy</a></label></li>
+</ul>
+<h3 id="questions">Questions:</h3>
+<div class="questions-container">
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What are the shipping options, costs, and timeframes?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "How does BOPIS and curbside pickup work?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "Does Timberland ship internationally and to Canada?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "How do customers track their orders?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+</div>
+<button class="btn-add-qa" onclick="addQAPair(this)">➕ Add Question & Answer</button>
+<hr>
+<div style="page-break-before: always;"></div>
+<h2 id="topic-9-size-chart">TOPIC 9: SIZE CHART</h2>
+<h3 id="urls">URLs:</h3>
+<ul>
+<li><input type="checkbox" id="checkbox22"><label for="checkbox22"><a href="https://www.timberland.com/en-us/customer-care/size-chart" target="_blank">https://www.timberland.com/en-us/customer-care/size-chart</a></label></li>
+</ul>
+<h3 id="questions">Questions:</h3>
+<div class="questions-container">
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What sizing information is available for footwear and apparel?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "How should Timberland boots fit?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What if customers are between sizes?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+</div>
+<button class="btn-add-qa" onclick="addQAPair(this)">➕ Add Question & Answer</button>
+<hr>
+<div style="page-break-before: always;"></div>
+<h2 id="topic-10-damaged-package">TOPIC 10: DAMAGED PACKAGE</h2>
+<h3 id="urls">URLs:</h3>
+<ul>
+<li><input type="checkbox" id="checkbox23"><label for="checkbox23"><a href="https://www.timberland.com/en-us/customer-care/returns/my-order-has-shipping-damage-what-can-i-do" target="_blank">https://www.timberland.com/en-us/customer-care/returns/my-order-has-shipping-damage-what-can-i-do</a></label></li>
+</ul>
+<h3 id="questions">Questions:</h3>
+<div class="questions-container">
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What should customers do if package arrives damaged?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What information and photos are needed?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "What are the resolution options and timeline?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair">
+<textarea class="fill-in-question" placeholder="Enter your question here...">Question: for example, "When should this be escalated to a human?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" placeholder="Fill in your answer here..."></textarea>
+</div>
+</div>
+<button class="btn-add-qa" onclick="addQAPair(this)">➕ Add Question & Answer</button>
+<hr>
+<div style="page-break-before: always;"></div>
+<h2 id="notes">NOTES</h2>
+<textarea class="fill-in fill-in-large" placeholder="Fill in any additional notes or observations..."></textarea>
+
+</body>
+</html>
