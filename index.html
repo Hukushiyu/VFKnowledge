@@ -338,7 +338,6 @@ li {
 		</div>
 		
 		<button class="btn" onclick="exportData()">📥 Export JSON</button>
-		<button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All</button>
 	</div>
 </div>
 
@@ -718,6 +717,12 @@ const firebaseConfig = {
   appId: "1:652654371544:web:bf60599622ea8d3901adad"
 };
 
+// ============================================================================
+// SECURITY CONFIGURATION
+// ============================================================================
+// 🔒 ADMIN PASSWORD - Change this to your desired password
+const ADMIN_PASSWORD = "TBL2024Admin!";  // ⚠️ CHANGE THIS PASSWORD!
+
 // Initialize Firebase
 let database;
 let currentUserId;
@@ -1036,13 +1041,28 @@ function exportData() {
 	});
 }
 
-// Clear all data
+// Clear all data (password protected)
 function clearAllData() {
 	if (!isInitialized) {
 		alert('Firebase is not configured.');
 		return;
 	}
 	
+	// 🔒 PASSWORD PROTECTION
+	const enteredPassword = prompt('🔒 This action requires administrator access.\n\nPlease enter the admin password:');
+	
+	if (enteredPassword === null) {
+		// User clicked Cancel
+		return;
+	}
+	
+	if (enteredPassword !== ADMIN_PASSWORD) {
+		alert('❌ Incorrect password. Access denied.\n\nThis action requires administrator privileges.');
+		console.warn('Failed Clear All attempt - incorrect password');
+		return;
+	}
+	
+	// Password correct, proceed with deletion
 	if (confirm('⚠️ Are you sure you want to clear ALL data? This will affect all users!')) {
 		if (confirm('Really sure? This will delete all progress for everyone.')) {
 			database.ref().remove().then(() => {
@@ -1057,6 +1077,7 @@ function clearAllData() {
 				
 				updateProgress();
 				alert('✅ All data cleared from Firebase');
+				console.log('Clear All executed successfully by admin');
 			}).catch((error) => {
 				console.error('Clear error:', error);
 				alert('❌ Error clearing data: ' + error.message);
