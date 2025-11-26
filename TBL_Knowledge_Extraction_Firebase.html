@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>TBL Knowledge Article Extraction (Firebase Real-Time)</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Ubuntu", "Droid Sans", sans-serif;
+	font-size: 14px;
+	padding: 0 26px;
+	line-height: 22px;
+	word-wrap: break-word;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+h1 {
+	font-size: 2em;
+	margin: 0.67em 0;
+	border-bottom: 2px solid #ddd;
+	padding-bottom: 10px;
+}
+
+h2 {
+	font-size: 1.5em;
+	margin: 1.5em 0 0.5em;
+	color: #333;
+	border-bottom: 1px solid #eee;
+	padding-bottom: 5px;
+}
+
+h3 {
+	font-size: 1.2em;
+	margin: 1em 0 0.5em;
+	color: #555;
+}
+
+textarea {
+	width: 100%;
+	min-height: 100px;
+	padding: 10px;
+	font-family: inherit;
+	font-size: 13px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+	resize: vertical;
+	margin-bottom: 10px;
+}
+
+textarea.fill-in {
+	background-color: #fafafa;
+	transition: all 0.2s;
+}
+
+textarea.fill-in:hover {
+	border-color: #999;
+}
+
+textarea.fill-in:focus {
+	outline: none;
+	border-color: #4a90e2;
+	background-color: #fff;
+	box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+textarea.fill-in-question {
+	background-color: #e3f2fd;
+	border: 2px solid #2196f3;
+	font-weight: bold;
+	min-height: 60px;
+}
+
+textarea.fill-in-question:focus {
+	background-color: #bbdefb;
+	border-color: #1976d2;
+	box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+textarea.fill-in-large {
+	min-height: 200px;
+}
+
+/* Realtime editing indicator */
+textarea.being-edited {
+	border-color: #ff9800 !important;
+	box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.2) !important;
+}
+
+input[type="checkbox"] {
+	width: 18px;
+	height: 18px;
+	margin-right: 8px;
+	cursor: pointer;
+	vertical-align: middle;
+}
+
+label {
+	cursor: pointer;
+	font-size: 13px;
+	vertical-align: middle;
+}
+
+a {
+	color: #0066cc;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #551a8b;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+hr {
+	border: none;
+	border-top: 1px solid #ddd;
+	margin: 30px 0;
+}
+
+ul {
+	padding-left: 20px;
+}
+
+li {
+	margin: 8px 0;
+}
+
+/* Control Bar Styles */
+.control-bar {
+	position: sticky;
+	top: 0;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	padding: 15px 20px;
+	margin: -26px -26px 20px -26px;
+	box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 15px;
+}
+
+.control-bar h3 {
+	margin: 0;
+	color: white;
+	font-size: 18px;
+}
+
+.control-section {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
+
+.status-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+	background: rgba(255,255,255,0.2);
+	padding: 6px 12px;
+	border-radius: 20px;
+}
+
+.status-indicator {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background-color: #4caf50;
+	animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0.5; }
+}
+
+.btn {
+	background-color: white;
+	color: #667eea;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 20px;
+	cursor: pointer;
+	font-size: 13px;
+	font-weight: 600;
+	transition: all 0.2s;
+}
+
+.btn:hover {
+	background-color: #f0f0f0;
+	transform: translateY(-1px);
+	box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.btn:active {
+	transform: translateY(0);
+}
+
+.btn-danger {
+	background-color: #ff5252;
+	color: white;
+}
+
+.btn-danger:hover {
+	background-color: #ff1744;
+}
+
+/* Q&A Pair Container */
+.questions-container {
+	background: #f9f9f9;
+	padding: 15px;
+	border-radius: 8px;
+	margin: 15px 0;
+}
+
+.qa-pair {
+	position: relative;
+	background: white;
+	padding: 15px;
+	margin-bottom: 15px;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.btn-delete {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	background-color: #ff5252;
+	color: white;
+	border: none;
+	border-radius: 50%;
+	width: 30px;
+	height: 30px;
+	font-size: 20px;
+	line-height: 1;
+	cursor: pointer;
+	transition: all 0.2s;
+	z-index: 10;
+}
+
+.btn-delete:hover {
+	background-color: #ff1744;
+	transform: scale(1.1);
+}
+
+.btn-add-qa {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	border: none;
+	padding: 12px 24px;
+	border-radius: 25px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 600;
+	margin: 15px 0;
+	transition: all 0.2s;
+	display: inline-block;
+}
+
+.btn-add-qa:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Active users indicator */
+.active-users {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	background: rgba(255,255,255,0.2);
+	padding: 6px 12px;
+	border-radius: 20px;
+	font-size: 13px;
+}
+
+.user-avatar {
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 11px;
+	font-weight: bold;
+	color: white;
+	border: 2px solid white;
+}
+
+/* Connection status */
+.connection-status {
+	padding: 8px 15px;
+	border-radius: 20px;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.connection-status.connected {
+	background: rgba(76, 175, 80, 0.2);
+	color: #4caf50;
+}
+
+.connection-status.disconnected {
+	background: rgba(244, 67, 54, 0.2);
+	color: #f44336;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- Control Bar -->
+<div class="control-bar">
+	<h3>📊 TBL Knowledge Extraction</h3>
+	
+	<div class="control-section">
+		<div class="connection-status" id="connectionStatus">
+			<span class="status-indicator" id="statusDot"></span>
+			<span id="statusText">Connecting...</span>
+		</div>
+		
+		<div class="active-users" id="activeUsers">
+			<span>👥</span>
+			<span id="userCount">0 online</span>
+		</div>
+		
+		<div class="status-item">
+			<span id="progressStats">Progress: 0%</span>
+		</div>
+		
+		<button class="btn" onclick="exportData()">📥 Export JSON</button>
+		<button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All</button>
+	</div>
+</div>
+
+<!-- Firebase Configuration Notice -->
+<div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px;">
+	<strong>⚠️ Firebase Configuration Required</strong><br>
+	<span style="font-size: 13px; color: #856404;">
+		Before using this document, you need to configure Firebase. See the setup guide: <code>TBL_Knowledge_Extraction_Firebase_SETUP.md</code>
+		<br>Configure your Firebase credentials in the script section at the bottom of this file.
+	</span>
+</div>
+
+<h1 id="timberland-knowledge-article-extraction">Timberland Knowledge Article Extraction</h1>
+<p><strong>Instructions:</strong> Review each URL, extract the key information, and fill in the answers. All changes are saved to Firebase in real-time and synced across all users.</p>
+
+<hr>
+
+<h2 id="topic-1-warranty">TOPIC 1: WARRANTY</h2>
+<h3 id="urls">URLs:</h3>
+<ul>
+<li><input type="checkbox" id="checkbox0" data-id="checkbox0"><label for="checkbox0"><a href="https://www.timberland.com/en-us/customer-care/warranties/is-my-item-under-warranty" target="_blank">https://www.timberland.com/en-us/customer-care/warranties/is-my-item-under-warranty</a></label></li>
+<li><input type="checkbox" id="checkbox1" data-id="checkbox1"><label for="checkbox1"><a href="https://www.timberland.com/en-us/customer-care/warranties/what-does-your-watch-warranty-cover" target="_blank">https://www.timberland.com/en-us/customer-care/warranties/what-does-your-watch-warranty-cover</a></label></li>
+</ul>
+<h3 id="questions">Questions:</h3>
+<div class="questions-container" data-topic="warranty">
+<div class="qa-pair" data-qa-id="warranty-qa-0">
+<textarea class="fill-in-question" data-field="question" placeholder="Enter your question here...">Question: for example, "What items are covered under warranty?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" data-field="answer" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair" data-qa-id="warranty-qa-1">
+<textarea class="fill-in-question" data-field="question" placeholder="Enter your question here...">Question: for example, "How long is the warranty period?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" data-field="answer" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair" data-qa-id="warranty-qa-2">
+<textarea class="fill-in-question" data-field="question" placeholder="Enter your question here...">Question: for example, "What does the warranty cover?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" data-field="answer" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair" data-qa-id="warranty-qa-3">
+<textarea class="fill-in-question" data-field="question" placeholder="Enter your question here...">Question: for example, "What is NOT covered by warranty?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" data-field="answer" placeholder="Fill in your answer here..."></textarea>
+</div>
+</div>
+<button class="btn-add-qa" onclick="addQAPair(this, 'warranty')">➕ Add Question & Answer</button>
+
+<hr>
+<div style="page-break-before: always;"></div>
+
+<h2 id="topic-2-account">TOPIC 2: ACCOUNT MANAGEMENT</h2>
+<h3 id="urls">URLs:</h3>
+<ul>
+<li><input type="checkbox" id="checkbox2" data-id="checkbox2"><label for="checkbox2"><a href="https://www.timberland.com/en-us/customer-care/manage-account/how-do-i-manage-my-account" target="_blank">https://www.timberland.com/en-us/customer-care/manage-account/how-do-i-manage-my-account</a></label></li>
+<li><input type="checkbox" id="checkbox3" data-id="checkbox3"><label for="checkbox3"><a href="https://www.timberland.com/en-us/customer-care/manage-account/how-do-i-use-favorites" target="_blank">https://www.timberland.com/en-us/customer-care/manage-account/how-do-i-use-favorites</a></label></li>
+</ul>
+<h3 id="questions">Questions:</h3>
+<div class="questions-container" data-topic="account">
+<div class="qa-pair" data-qa-id="account-qa-0">
+<textarea class="fill-in-question" data-field="question" placeholder="Enter your question here...">Question: for example, "How do customers create an account?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" data-field="answer" placeholder="Fill in your answer here..."></textarea>
+</div>
+<div class="qa-pair" data-qa-id="account-qa-1">
+<textarea class="fill-in-question" data-field="question" placeholder="Enter your question here...">Question: for example, "How do customers reset their password?"</textarea>
+<button class="btn-delete" onclick="deleteQAPair(this)" title="Delete this Q&A pair">×</button>
+<br>
+<textarea class="fill-in" data-field="answer" placeholder="Fill in your answer here..."></textarea>
+</div>
+</div>
+<button class="btn-add-qa" onclick="addQAPair(this, 'account')">➕ Add Question & Answer</button>
+
+<hr>
+
+<h2 id="notes">NOTES</h2>
+<textarea class="fill-in fill-in-large" data-field="notes" data-qa-id="general-notes" placeholder="Fill in any additional notes or observations..."></textarea>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+<script>
+// ============================================================================
+// FIREBASE CONFIGURATION
+// ============================================================================
+// 🔧 REPLACE THIS WITH YOUR FIREBASE CONFIG FROM FIREBASE CONSOLE
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyC8vNdYYs6bV6Agx6et204_Otar8mwt5UA",
+  authDomain: "vf-tbl-knowledge.firebaseapp.com",
+  databaseURL: "https://vf-tbl-knowledge-default-rtdb.firebaseio.com",
+  projectId: "vf-tbl-knowledge",
+  storageBucket: "vf-tbl-knowledge.firebasestorage.app",
+  messagingSenderId: "652654371544",
+  appId: "1:652654371544:web:bf60599622ea8d3901adad"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+// Initialize Firebase
+let database;
+let currentUserId;
+let isInitialized = false;
+
+try {
+	firebase.initializeApp(firebaseConfig);
+	database = firebase.database();
+	currentUserId = 'user_' + Math.random().toString(36).substr(2, 9);
+	isInitialized = true;
+	console.log('✅ Firebase initialized successfully');
+	updateConnectionStatus('connected', 'Connected to Firebase');
+} catch (error) {
+	console.error('❌ Firebase initialization error:', error);
+	updateConnectionStatus('disconnected', 'Not configured');
+	alert('⚠️ Firebase is not configured. Please follow the setup guide to configure Firebase credentials.');
+}
+
+// ============================================================================
+// FIREBASE REALTIME DATABASE FUNCTIONS
+// ============================================================================
+
+// Save data to Firebase
+function saveToFirebase(path, value) {
+	if (!isInitialized) return;
+	
+	database.ref(path).set(value).catch(error => {
+		console.error('Error saving to Firebase:', error);
+	});
+}
+
+// Load all data from Firebase
+function loadFromFirebase() {
+	if (!isInitialized) return;
+	
+	// Load checkboxes
+	database.ref('checkboxes').on('value', (snapshot) => {
+		const data = snapshot.val();
+		if (data) {
+			Object.keys(data).forEach(checkboxId => {
+				const checkbox = document.getElementById(checkboxId);
+				if (checkbox && checkbox.checked !== data[checkboxId]) {
+					checkbox.checked = data[checkboxId];
+				}
+			});
+		}
+		updateProgress();
+	});
+	
+	// Load Q&A pairs
+	database.ref('qaPairs').on('value', (snapshot) => {
+		const data = snapshot.val();
+		if (data) {
+			Object.keys(data).forEach(qaId => {
+				const qaPair = document.querySelector(`[data-qa-id="${qaId}"]`);
+				if (qaPair) {
+					const questionTextarea = qaPair.querySelector('[data-field="question"]');
+					const answerTextarea = qaPair.querySelector('[data-field="answer"]');
+					
+					if (questionTextarea && data[qaId].question !== undefined && 
+						document.activeElement !== questionTextarea) {
+						questionTextarea.value = data[qaId].question;
+					}
+					
+					if (answerTextarea && data[qaId].answer !== undefined && 
+						document.activeElement !== answerTextarea) {
+						answerTextarea.value = data[qaId].answer;
+					}
+				}
+			});
+		}
+		updateProgress();
+	});
+	
+	// Monitor active users
+	const userRef = database.ref('activeUsers/' + currentUserId);
+	userRef.set({
+		timestamp: firebase.database.ServerValue.TIMESTAMP,
+		online: true
+	});
+	
+	userRef.onDisconnect().remove();
+	
+	database.ref('activeUsers').on('value', (snapshot) => {
+		const users = snapshot.val();
+		const userCount = users ? Object.keys(users).length : 0;
+		document.getElementById('userCount').textContent = `${userCount} online`;
+	});
+	
+	// Keep connection alive
+	setInterval(() => {
+		if (isInitialized) {
+			userRef.update({ timestamp: firebase.database.ServerValue.TIMESTAMP });
+		}
+	}, 30000);
+}
+
+// Setup Firebase listeners for all inputs
+function setupFirebaseListeners() {
+	if (!isInitialized) return;
+	
+	// Checkboxes
+	document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+		checkbox.addEventListener('change', function() {
+			saveToFirebase('checkboxes/' + this.id, this.checked);
+		});
+	});
+	
+	// Q&A textareas
+	document.querySelectorAll('[data-qa-id]').forEach(qaPair => {
+		const qaId = qaPair.getAttribute('data-qa-id');
+		const questionTextarea = qaPair.querySelector('[data-field="question"]');
+		const answerTextarea = qaPair.querySelector('[data-field="answer"]');
+		
+		if (questionTextarea) {
+			questionTextarea.addEventListener('input', debounce(function() {
+				saveToFirebase('qaPairs/' + qaId + '/question', this.value);
+			}, 500));
+			
+			questionTextarea.addEventListener('focus', function() {
+				this.classList.add('being-edited');
+			});
+			
+			questionTextarea.addEventListener('blur', function() {
+				this.classList.remove('being-edited');
+				saveToFirebase('qaPairs/' + qaId + '/question', this.value);
+			});
+		}
+		
+		if (answerTextarea) {
+			answerTextarea.addEventListener('input', debounce(function() {
+				saveToFirebase('qaPairs/' + qaId + '/answer', this.value);
+			}, 500));
+			
+			answerTextarea.addEventListener('focus', function() {
+				this.classList.add('being-edited');
+			});
+			
+			answerTextarea.addEventListener('blur', function() {
+				this.classList.remove('being-edited');
+				saveToFirebase('qaPairs/' + qaId + '/answer', this.value);
+			});
+		}
+	});
+}
+
+// ============================================================================
+// UI FUNCTIONS
+// ============================================================================
+
+// Update connection status
+function updateConnectionStatus(status, text) {
+	const statusEl = document.getElementById('connectionStatus');
+	const statusText = document.getElementById('statusText');
+	const statusDot = document.getElementById('statusDot');
+	
+	statusEl.className = 'connection-status ' + status;
+	statusText.textContent = text;
+	
+	if (status === 'connected') {
+		statusDot.style.backgroundColor = '#4caf50';
+	} else {
+		statusDot.style.backgroundColor = '#f44336';
+	}
+}
+
+// Update progress
+function updateProgress() {
+	const textareas = document.querySelectorAll('textarea.fill-in');
+	const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+	
+	let filledTextareas = 0;
+	textareas.forEach(textarea => {
+		if (textarea.value.trim().length > 0) {
+			filledTextareas++;
+		}
+	});
+	
+	let checkedBoxes = 0;
+	checkboxes.forEach(checkbox => {
+		if (checkbox.checked) {
+			checkedBoxes++;
+		}
+	});
+	
+	const totalItems = textareas.length;
+	const percentage = totalItems > 0 ? Math.round((filledTextareas / totalItems) * 100) : 0;
+	
+	document.getElementById('progressStats').textContent = 
+		`Progress: ${percentage}% • ${filledTextareas}/${totalItems} fields • ${checkedBoxes}/${checkboxes.length} URLs`;
+}
+
+// Debounce function
+function debounce(func, wait) {
+	let timeout;
+	return function executedFunction(...args) {
+		const later = () => {
+			clearTimeout(timeout);
+			func.apply(this, args);
+		};
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+	};
+}
+
+// Add new Q&A pair
+function addQAPair(button, topic) {
+	const questionsContainer = button.previousElementSibling;
+	const existingPairs = questionsContainer.querySelectorAll('.qa-pair');
+	const newIndex = existingPairs.length;
+	const qaId = `${topic}-qa-${newIndex}`;
+	
+	const qaPair = document.createElement('div');
+	qaPair.className = 'qa-pair';
+	qaPair.setAttribute('data-qa-id', qaId);
+	
+	const questionTextarea = document.createElement('textarea');
+	questionTextarea.className = 'fill-in-question';
+	questionTextarea.setAttribute('data-field', 'question');
+	questionTextarea.placeholder = 'Enter your question here...';
+	questionTextarea.value = 'Question: for example, "Your question here"';
+	
+	const deleteBtn = document.createElement('button');
+	deleteBtn.className = 'btn-delete';
+	deleteBtn.onclick = function() { deleteQAPair(this); };
+	deleteBtn.title = 'Delete this Q&A pair';
+	deleteBtn.textContent = '×';
+	
+	const br = document.createElement('br');
+	
+	const answerTextarea = document.createElement('textarea');
+	answerTextarea.className = 'fill-in';
+	answerTextarea.setAttribute('data-field', 'answer');
+	answerTextarea.placeholder = 'Fill in your answer here...';
+	
+	qaPair.appendChild(questionTextarea);
+	qaPair.appendChild(deleteBtn);
+	qaPair.appendChild(br);
+	qaPair.appendChild(answerTextarea);
+	
+	questionsContainer.appendChild(qaPair);
+	
+	// Setup Firebase listeners for new elements
+	if (isInitialized) {
+		questionTextarea.addEventListener('input', debounce(function() {
+			saveToFirebase('qaPairs/' + qaId + '/question', this.value);
+		}, 500));
+		
+		questionTextarea.addEventListener('blur', function() {
+			saveToFirebase('qaPairs/' + qaId + '/question', this.value);
+		});
+		
+		answerTextarea.addEventListener('input', debounce(function() {
+			saveToFirebase('qaPairs/' + qaId + '/answer', this.value);
+		}, 500));
+		
+		answerTextarea.addEventListener('blur', function() {
+			saveToFirebase('qaPairs/' + qaId + '/answer', this.value);
+		});
+		
+		// Save initial values
+		saveToFirebase('qaPairs/' + qaId, {
+			question: questionTextarea.value,
+			answer: answerTextarea.value
+		});
+	}
+	
+	updateProgress();
+}
+
+// Delete Q&A pair
+function deleteQAPair(button) {
+	if (confirm('Are you sure you want to delete this Q&A pair?')) {
+		const qaPair = button.closest('.qa-pair');
+		const qaId = qaPair.getAttribute('data-qa-id');
+		
+		// Remove from Firebase
+		if (isInitialized && qaId) {
+			database.ref('qaPairs/' + qaId).remove();
+		}
+		
+		qaPair.remove();
+		updateProgress();
+	}
+}
+
+// Export data as JSON
+function exportData() {
+	if (!isInitialized) {
+		alert('Firebase is not configured. Cannot export data.');
+		return;
+	}
+	
+	database.ref().once('value').then((snapshot) => {
+		const data = snapshot.val();
+		
+		const exportData = {
+			exportDate: new Date().toISOString(),
+			data: data
+		};
+		
+		const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `timberland_knowledge_extraction_${new Date().toISOString().split('T')[0]}.json`;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+		
+		alert('✅ Data exported successfully!');
+	}).catch((error) => {
+		console.error('Export error:', error);
+		alert('❌ Error exporting data: ' + error.message);
+	});
+}
+
+// Clear all data
+function clearAllData() {
+	if (!isInitialized) {
+		alert('Firebase is not configured.');
+		return;
+	}
+	
+	if (confirm('⚠️ Are you sure you want to clear ALL data? This will affect all users!')) {
+		if (confirm('Really sure? This will delete all progress for everyone.')) {
+			database.ref().remove().then(() => {
+				// Clear local UI
+				document.querySelectorAll('textarea').forEach(textarea => {
+					textarea.value = '';
+				});
+				
+				document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+					checkbox.checked = false;
+				});
+				
+				updateProgress();
+				alert('✅ All data cleared from Firebase');
+			}).catch((error) => {
+				console.error('Clear error:', error);
+				alert('❌ Error clearing data: ' + error.message);
+			});
+		}
+	}
+}
+
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+
+window.addEventListener('DOMContentLoaded', function() {
+	updateProgress();
+	
+	if (isInitialized) {
+		setupFirebaseListeners();
+		loadFromFirebase();
+	} else {
+		alert('⚠️ Firebase is not configured. Please update the Firebase configuration in this HTML file. See the setup guide for instructions.');
+	}
+});
+
+</script>
+
+</body>
+</html>
+
